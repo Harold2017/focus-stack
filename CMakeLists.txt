@@ -11,6 +11,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(OpenCV REQUIRED)
 find_package(Qt6 CONFIG REQUIRED COMPONENTS Core Widgets)
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+find_package(pybind11 CONFIG REQUIRED)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -21,6 +23,8 @@ set(PROJECT_LIB ${PROJECT_NAME}_lib)
 set(PROJECT_TEST ${PROJECT_NAME}_test)
 set(PROJECT_UI_DIR ${CMAKE_SOURCE_DIR}/ui)
 set(PROJECT_UI ${PROJECT_NAME}_ui)
+set(PROJECT_PY_DIR ${CMAKE_SOURCE_DIR}/py)
+set(PROJECT_PY focus_stack_py)
 
 option(BUILD_TESTS "build tests" ON)
 
@@ -53,6 +57,10 @@ target_link_libraries(${PROJECT_UI}
     PRIVATE Qt${QT_VERSION_MAJOR}::Core
     PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
 )
+
+pybind11_add_module(${PROJECT_PY} MODULE ${PROJECT_PY_DIR}/py_focusstack.cpp)
+target_include_directories(${PROJECT_PY} PRIVATE ${SRC_DIR})
+target_link_libraries(${PROJECT_PY} PRIVATE ${PROJECT_LIB})
 
 if (BUILD_TESTS)
     enable_testing()
